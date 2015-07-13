@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">微播</string>
+
+    <string name="fire_broadcast">新微播</string>
+    <string name="retrieve_broadcast">收微播</string>
+    <string name="action_settings">Settings</string>
+    <string name="base_uri">http://192.168.1.103:8080</string>
+    <string name="title_activity_broadcast">新微播--喊一嗓子 让周围知道</string>
+    <string name="send_broadcast">发送</string>
+    <string name="send_toast">已发送</string>
+    <string name="tv_brief">概述</string>
+    <string name="tv_description">具体信息</string>
+    <string name="tv_expireDate">过期时间</string>
+    <string name="progress_dialog">刷新 请稍等...</string>
+    <string name="btn_back">返回</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_broadcast_info">BroadcastInfoActivity</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="infowindow_contentDesc">portrait</string>
+</resources>

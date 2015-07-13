@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/infowindow_border"
+    style=""
+    android:paddingTop="3dp"
+    android:paddingRight="7dp"
+    android:paddingBottom="5dp"
+    android:paddingLeft="7dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/iv_portrait"
+            android:src="@drawable/spring_android" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/tv_infowin_userName"
+                android:paddingLeft="10px"
+                android:paddingBottom="10px"
+                android:autoText="false"
+                android:textColor="#ff0f6c6c" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/tv_createdDate"
+                android:textColor="#ff0f6c6c" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/tv_infowin_briefContent"
+        android:textSize="15sp"
+        android:textIsSelectable="false"
+        android:textStyle="bold"
+        android:textColor="#ff767676"
+        android:maxEms="15"
+        />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/right_arrow_24" />
+
+</LinearLayout>

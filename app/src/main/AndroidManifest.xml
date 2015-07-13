@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.skyline.trumpet.trumpetapp" >
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- get internet accessibility -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- get WIFI state info for getting location -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <!-- get coarse location by using network -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- get accurate location by using GPS -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="TencentMapSDK"
+            android:value="RVNBZ-YLO3P-FM5DQ-V56SQ-OWNU6-B7FKU" />
+
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".BroadcastActivity"
+            android:label="@string/title_activity_broadcast" >
+            <intent-filter>
+                <action android:name="com.skyline.trumpet.trumpetapp.BroadcastActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".BroadcastInfoActivity"
+            android:label="@string/title_activity_broadcast_info" >
+        </activity>
+    </application>
+
+</manifest>
