@@ -4,4 +4,15 @@
     tools:context="com.skyline.trumpet.trumpetapp.BroadcastActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/menu_home_page"
+        android:title="@string/menu_home_page"
+        android:orderInCategory="1"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/menu_fire_broadcast" android:title="@string/menu_fire_broadcast"
+         android:orderInCategory="2" app:showAsAction="ifRoom" />
+    <item android:id="@+id/menu_retrieve_broadcast" android:title="@string/menu_retrieve_broadcast"
+         android:orderInCategory="3" app:showAsAction="ifRoom" />
+    <!--<item android:id="@+id/menu_friends" android:title="@string/menu_friends"
+        android:orderInCategory="5" app:showAsAction="always|withText" /> -->
 </menu>

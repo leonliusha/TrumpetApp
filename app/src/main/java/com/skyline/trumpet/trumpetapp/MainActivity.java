@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.support.v7.widget.Toolbar;
 
 import com.skyline.trumpet.trumpetapp.model.Broadcast;
 import com.skyline.trumpet.trumpetapp.model.MyCoordinate;
@@ -23,13 +26,11 @@ import com.tencent.mapsdk.raster.model.BitmapDescriptorFactory;
 import com.tencent.mapsdk.raster.model.LatLng;
 import com.tencent.mapsdk.raster.model.Marker;
 import com.tencent.mapsdk.raster.model.MarkerOptions;
-import com.tencent.tencentmap.mapsdk.map.MapActivity;
 import com.tencent.tencentmap.mapsdk.map.MapView;
 import com.tencent.tencentmap.mapsdk.map.TencentMap;
 import com.tencent.tencentmap.mapsdk.map.TencentMap.OnInfoWindowClickListener;
 import com.tencent.tencentmap.mapsdk.map.TencentMap.OnMapLongClickListener;
 import com.tencent.tencentmap.mapsdk.map.TencentMap.OnMarkerDraggedListener;
-
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -39,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MainActivity extends MapActivity implements OnMarkerDraggedListener {
+public class MainActivity extends AppCompatActivity implements OnMarkerDraggedListener {
     final static String TAG = "MainActivity";
     private MapView mapView;
     private TencentMap tencentMap;
@@ -60,6 +61,8 @@ public class MainActivity extends MapActivity implements OnMarkerDraggedListener
     private boolean destroyed = false;
     private Map<Marker,Broadcast> markerBroadcastMap;
     private Marker openedMarker;
+    private Toolbar toolbar;
+    private LinearLayout ll_menuHome, ll_menuFireBroadcast, ll_menuLocate, ll_meneRetrieveBroadcast, ll_menuFriends;
 
 
     @Override
@@ -67,20 +70,51 @@ public class MainActivity extends MapActivity implements OnMarkerDraggedListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initialization();
+        initToolbarListener();
+        initMenuListener();
+        initLongClickListener();
         mapView.onCreate(savedInstanceState);
         initOnMarkerClickListener();
         initInfoWindowLayout();
         positionServiceInit();
-        fireBroadcastButtonListener();
-        retrieveBroadcastButtonListener();
+        //fireBroadcastButtonListener();
+        //retrieveBroadcastButtonListener();
         inforWindowClickListener();
+
 
 
     }
 
+    private void initToolbarListener(){
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+//                switch (item.getItemId()) {
+//                    case R.id.menu_fire_broadcast:
+//                        fireBroadcastButtonListener();
+//                        return true;
+//                    case R.id.menu_retrieve_broadcast:
+//                        retrieveBroadcastButtonListener();
+//                        return true;
+//                }
+                return false;
+            }
+        });
+
+    }
+
+
+    private void initMenuListener(){
+
+    }
+
+
     //only myMarker has LongClickListener ONLY!!
-    private void initialization(){
+    private void initLongClickListener(){
         mapView = (MapView)findViewById(R.id.mapview);
         tencentMap = mapView.getMap();
         markerBroadcastMap = new HashMap<>();
@@ -172,26 +206,31 @@ public class MainActivity extends MapActivity implements OnMarkerDraggedListener
     }
 
     private void fireBroadcastButtonListener(){
-        btn_fireBroadcast = (Button)findViewById(R.id.btn_fireBroadcast);
-        btn_fireBroadcast.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), BroadcastActivity.class);
+//        btn_fireBroadcast = (Button)findViewById(R.id.btn_fireBroadcast);
+//        btn_fireBroadcast.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), BroadcastActivity.class);
+//                intent.putExtra("myCoordinate", myCoordinate);
+//                startActivity(intent);
+//            }
+//        });
+        Intent intent = new Intent(getApplicationContext(), BroadcastActivity.class);
                 intent.putExtra("myCoordinate", myCoordinate);
-                startActivity(intent);
-            }
-        });
+        startActivity(intent);
     }
 
     private void retrieveBroadcastButtonListener(){
         String url = getString(R.string.base_uri) + "/getBroadcastsInDefaultRange";
-        btn_retrieveBroadcast = (Button)findViewById(R.id.btn_retrieveBroadcast);
-        btn_retrieveBroadcast.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new GetBroadcastsTask().execute();
-            }
-        });
+        new GetBroadcastsTask().execute();
+//        btn_retrieveBroadcast = (Button)findViewById(R.id.btn_retrieveBroadcast);
+//        btn_retrieveBroadcast.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                new GetBroadcastsTask().execute();
+//            }
+//        });
+
     }
 
     private void inforWindowClickListener(){
@@ -398,7 +437,7 @@ public class MainActivity extends MapActivity implements OnMarkerDraggedListener
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+       getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -407,6 +446,7 @@ public class MainActivity extends MapActivity implements OnMarkerDraggedListener
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

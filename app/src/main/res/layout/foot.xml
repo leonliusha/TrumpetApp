@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="fill_parent"
+    android:layout_height="58dp"
+    style="@style/layout_full">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="wrap_content"
+        android:layout_height="match_parent" android:id="@+id/menu_home_page"
+        android:background="#ffdddedc"
+        style="@style/layout_horizontal"
+        android:layout_weight="1">
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/ic_home_black_36dp"
+            android:nestedScrollingEnabled="false"
+            android:autoText="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/menu_home_page"
+            android:id="@+id/textView2" />
+    </LinearLayout>
+
+    <ImageView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"  android:src="@drawable/line" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="wrap_content"
+        android:layout_height="match_parent" android:background="#ffdddedc"
+        android:id="@+id/menu_retrieve_broadcast"
+        style="@style/layout_horizontal"
+        android:layout_weight="1">
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/ic_autorenew_black_36dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/menu_retrieve_broadcast"
+            android:id="@+id/textView4" />
+    </LinearLayout>
+
+    <ImageView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"  android:src="@drawable/line" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="wrap_content" android:id="@+id/menu_near_by"
+        android:layout_height="match_parent" android:background="#ffdddedc"
+        style="@style/layout_horizontal"
+        android:layout_weight="1">
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/manu_locate36"
+            android:layout_marginTop="1dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/menu_near_by"
+            android:id="@+id/textView7" />
+    </LinearLayout>
+
+    <ImageView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"  android:src="@drawable/line" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="wrap_content" android:id="@+id/menu_fire_broadcast"
+        android:layout_height="match_parent" android:background="#ffdddedc"
+        style="@style/layout_horizontal"
+        android:layout_weight="1">
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/ic_message_black_36dp"
+            android:layout_marginTop="1dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/menu_fire_broadcast"
+            android:id="@+id/textView5" />
+    </LinearLayout>
+
+    <ImageView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"  android:src="@drawable/line" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="wrap_content" android:id="@+id/menu_friends"
+        android:layout_height="match_parent" android:background="#ffdddedc"
+        style="@style/layout_horizontal"
+        android:layout_weight="1">
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/ic_people_black_36dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/menu_friends"
+            android:id="@+id/textView6" />
+    </LinearLayout>
+</LinearLayout>

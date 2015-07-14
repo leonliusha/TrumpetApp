@@ -10,9 +10,19 @@
     <string name="send_toast">已发送</string>
     <string name="tv_brief">概述</string>
     <string name="tv_description">具体信息</string>
-    <string name="tv_expireDate">过期时间</string>
+    <string name="tv_expireDate">信息过期时间</string>
     <string name="progress_dialog">刷新 请稍等...</string>
     <string name="btn_back">返回</string>
+    <string name="menu_interest_broadcast">找兴趣</string>
+    <string name="toolbar_myself">我</string>
+    <string name="menu_home_page">首页</string>
+    <string name="menu_friends">朋友</string>
+    <string name="menu_fire_broadcast">发消息</string>
+    <string name="menu_retrieve_broadcast">收消息</string>
+    <string name="menu_near_by">周边</string>
+    <string name="toolbar_search">发现</string>
+    <string name="toolbar_locate">定位</string>
+    <string name="toolbar_list">列表</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_broadcast_info">BroadcastInfoActivity</string>

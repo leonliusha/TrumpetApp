@@ -57,32 +57,13 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <EditText
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="date"
-        android:ems="10"
-        android:id="@+id/et_expireDate"
+        android:id="@+id/imageButton"
         android:layout_above="@+id/btn_sendBroadcast"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/tv_expireDate"
-        android:id="@+id/tv_expireDate"
-        android:layout_above="@+id/et_expireDate"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <SeekBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/seekBar"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_toRightOf="@+id/tv_brief"
+        android:layout_toEndOf="@+id/tv_brief"
+        android:layout_marginBottom="63dp" />
 
 </RelativeLayout>
