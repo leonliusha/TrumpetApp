@@ -5,14 +5,13 @@
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
 
-    <item android:id="@+id/menu_home_page"
-        android:title="@string/menu_home_page"
-        android:orderInCategory="1"
-        app:showAsAction="ifRoom" />
-    <item android:id="@+id/menu_fire_broadcast" android:title="@string/menu_fire_broadcast"
-         android:orderInCategory="2" app:showAsAction="ifRoom" />
-    <item android:id="@+id/menu_retrieve_broadcast" android:title="@string/menu_retrieve_broadcast"
-         android:orderInCategory="3" app:showAsAction="ifRoom" />
-    <!--<item android:id="@+id/menu_friends" android:title="@string/menu_friends"
-        android:orderInCategory="5" app:showAsAction="always|withText" /> -->
+    <item android:id="@+id/toolbar_search" android:title="@string/toolbar_search"
+        android:orderInCategory="1" app:showAsAction="always|withText"
+        android:icon="@drawable/search_light_24"/>
+    <item android:id="@+id/toolbar_list" android:title="@string/toolbar_list"
+        android:orderInCategory="2" app:showAsAction="always|withText"
+        android:icon="@drawable/list_light24"/>
+    <item android:id="@+id/toolbar_myself" android:title="@string/toolbar_myself"
+        android:orderInCategory="2" app:showAsAction="always|withText"
+        android:icon="@drawable/light_myself24"/>
 </menu>

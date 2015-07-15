@@ -1,23 +1,28 @@
 package com.skyline.trumpet.trumpetapp;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.skyline.trumpet.trumpetapp.common.DateTimePickerDialog;
 import com.skyline.trumpet.trumpetapp.model.Broadcast;
 import com.skyline.trumpet.trumpetapp.model.MyCoordinate;
 
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.DateTime;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -29,30 +34,59 @@ import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 
-public class BroadcastActivity extends Activity {
+public class BroadcastActivity extends AppCompatActivity {
     final static String TAG = BroadcastActivity.class.getSimpleName();
-    private DateTimeFormatter dtfOut = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
+    private DateFormat dtfOut = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
     private Button btn_sendBroadcast;
     private MyCoordinate myCoordinate;
-    private TextView etBriefContent;
-    private TextView etDescriptionContent;
+    private EditText etBriefContent;
+    private Toolbar toolbar;
+    private TextView tv_expireDate;
+    private LinearLayout layout_changeTime;
 
-    //private double myLongitude;
+    private String defaultExpireDateTime_chinese;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_broadcast);
 
+        btn_sendBroadcast = (Button)findViewById(R.id.btn_sendBroadcast);
+        btn_sendBroadcast.setEnabled(false);
+        initToolbar();
         initMyCoordinate();
         sendBroadcastButtonListener();
-        //dataSettingForTest();
+        initBriefContentListener();
+        initDateTimePicker();
 
+        //dataSettingForTest();
+    }
+
+    private void initToolbar(){
+        toolbar = (Toolbar)findViewById(R.id.broadcastToolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+//                switch (item.getItemId()) {
+//                    case R.id.menu_fire_broadcast:
+//                        fireBroadcastButtonListener();
+//                        return true;
+//                    case R.id.menu_retrieve_broadcast:
+//                        retrieveBroadcastButtonListener();
+//                        return true;
+//                }
+                return false;
+            }
+        });
     }
 
     private void dataSettingForTest(){
@@ -65,7 +99,7 @@ public class BroadcastActivity extends Activity {
     }
 
     private void sendBroadcastButtonListener(){
-        btn_sendBroadcast = (Button)findViewById(R.id.btn_sendBroadcast);
+        //btn_sendBroadcast = (Button)findViewById(R.id.btn_sendBroadcast);
         btn_sendBroadcast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,19 +111,70 @@ public class BroadcastActivity extends Activity {
         });
     }
 
+    private void initBriefContentListener(){
+        etBriefContent = (EditText)findViewById(R.id.et_briefContent);
+        etBriefContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().equals(""))
+                    btn_sendBroadcast.setEnabled(false);
+                else
+                    btn_sendBroadcast.setEnabled(true);
+            }
+        });
+    }
+
+    private void initDateTimePicker(){
+        DateTime expireDate = new DateTime().plusDays(1);
+        defaultExpireDateTime_chinese = expireDate.toString("yyyy年MM月dd日 HH:mm");
+        layout_changeTime = (LinearLayout) findViewById(R.id.ll_change_time);
+        tv_expireDate = (TextView) findViewById(R.id.tv_expire_date);
+        tv_expireDate.setText(defaultExpireDateTime_chinese);
+        //endDateTime.setText(initEndDateTime);
+        layout_changeTime.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                DateTimePickerDialog dateTimePicKerDialog = new DateTimePickerDialog(
+                        BroadcastActivity.this, tv_expireDate.getText().toString());
+                dateTimePicKerDialog.dateTimePicKerDialog(tv_expireDate);
+            }
+        });
+    }
+
+    public void showTimePickerDialog(View view){
+        TimePickerFragment timePicker = new TimePickerFragment();
+        timePicker.show(getFragmentManager(),"timePicker");
+
+    }
+
     private class PostBroadcastTask extends AsyncTask<MediaType, Void, Broadcast> {
         private Broadcast broadcast = new Broadcast();
 
         @Override
         //preparing the Broadcast entity
         protected void onPreExecute(){
-            etBriefContent = (TextView)findViewById(R.id.et_briefContent);
-            etDescriptionContent = (TextView)findViewById(R.id.et_descriptionContent);
+            //etBriefContent = (EditText)findViewById(R.id.et_briefContent);
+            EditText etDescriptionContent = (EditText)findViewById(R.id.et_descriptionContent);
             broadcast.setLatitude(myCoordinate.getMyLatitude());
             broadcast.setLongitude(myCoordinate.getMyLongitude());
             broadcast.setBrief(etBriefContent.getText().toString());
             broadcast.setDescription(etDescriptionContent.getText().toString());
-                broadcast.setExpireDate((new Timestamp(new Date().getTime())));
+            Date expireDate = new Date();
+            try {
+                expireDate = dtfOut.parse(tv_expireDate.getText().toString());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            broadcast.setExpireDate((new Timestamp(expireDate.getTime())));
 
         }
 

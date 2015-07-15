@@ -4,7 +4,7 @@
     <string name="fire_broadcast">新微播</string>
     <string name="retrieve_broadcast">收微播</string>
     <string name="action_settings">Settings</string>
-    <string name="base_uri">http://192.168.1.103:8080</string>
+    <!--<string name="base_uri">http://192.168.1.103:8080</string>-->
     <string name="title_activity_broadcast">新微播--喊一嗓子 让周围知道</string>
     <string name="send_broadcast">发送</string>
     <string name="send_toast">已发送</string>
@@ -23,6 +23,12 @@
     <string name="toolbar_search">发现</string>
     <string name="toolbar_locate">定位</string>
     <string name="toolbar_list">列表</string>
+    <string name="brief_hint">信息标题--简短的描述信息概括</string>
+    <string name="content_hint">信息内容</string>
+    <string name="date_time_picker_intro1">请为信息选择过期时间，默认过期时间为24小时</string>
+    <string name="date_time_picker_intro2">过期后不再标注地图，仍可在“我的信息”中找到</string>
+    <string name="change_time">更改时间</string>
+    <string name="change_date">更改日期</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_broadcast_info">BroadcastInfoActivity</string>
@@ -30,4 +36,5 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="infowindow_contentDesc">portrait</string>
+    <string name="title_activity_date_time_picker">DateTimePickerActivity</string>
 </resources>

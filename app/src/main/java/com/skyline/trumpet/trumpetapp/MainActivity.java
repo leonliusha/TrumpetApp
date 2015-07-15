@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
     private Map<Marker,Broadcast> markerBroadcastMap;
     private Marker openedMarker;
     private Toolbar toolbar;
-    private LinearLayout ll_menuHome, ll_menuFireBroadcast, ll_menuLocate, ll_meneRetrieveBroadcast, ll_menuFriends;
+    private LinearLayout clickedLayout, ll_menuHome, ll_menuFireBroadcast, ll_menuLocate, ll_menuRetrieveBroadcast, ll_menuFriends;
 
 
     @Override
@@ -109,7 +109,29 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
 
 
     private void initMenuListener(){
+        ll_menuRetrieveBroadcast = (LinearLayout)findViewById(R.id.menu_retrieve_broadcast);
+        ll_menuRetrieveBroadcast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(clickedLayout != null)
+                    clickedLayout.setBackgroundColor(getResources().getColor(R.color.menu_normal));
+                clickedLayout = ll_menuRetrieveBroadcast;
+                ll_menuRetrieveBroadcast.setBackgroundColor(getResources().getColor(R.color.menu_highlight));
+                retrieveBroadcastButtonListener();
+            }
+        });
 
+        ll_menuFireBroadcast = (LinearLayout)findViewById(R.id.menu_fire_broadcast);
+        ll_menuFireBroadcast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(clickedLayout != null)
+                    clickedLayout.setBackgroundColor(getResources().getColor(R.color.menu_normal));
+                clickedLayout = ll_menuFireBroadcast;
+                ll_menuFireBroadcast.setBackgroundColor(getResources().getColor(R.color.menu_highlight));
+                fireBroadcastButtonListener();
+            }
+        });
     }
 
 

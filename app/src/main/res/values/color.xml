@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="menu_highlight">
+        #1B7DCC
+    </color>
+
+    <color name="menu_normal">
+        #ffdddedc
+    </color>
+
+    <color name="highlightColor">
+        #47b7eb
+    </color>
+</resources>
