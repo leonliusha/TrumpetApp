@@ -1,67 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/infowindow_border"
     style=""
     android:paddingTop="3dp"
     android:paddingRight="7dp"
     android:paddingBottom="5dp"
-    android:paddingLeft="7dp">
+    android:paddingLeft="7dp"
+    android:orientation="horizontal"
+    android:baselineAligned="false">
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="@style/layout_vertical"
+        android:layout_weight="6">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:id="@+id/tv_infowin_briefContent"
+            android:textSize="12sp"
+            android:textIsSelectable="false"
+            android:textStyle="normal"
+            android:textColor="@color/highlightColor"
+            android:maxEms="10"
+            android:layout_weight="4"
+            style="layout_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:id="@+id/tv_infowin_descriptionContent"
+            style="@style/layout_vertical"
+            android:layout_weight="6"
+            android:textSize="12dp"
+            android:textColor="#ff767676"
+            android:maxLines="4"
+            android:maxEms="10"
+            android:singleLine="false" />
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/iv_portrait"
-            android:src="@drawable/spring_android" />
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:id="@+id/imageView"
+            android:src="@drawable/right_arrow_24"
+            style="@style/layout_horizontal"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="0.3dp"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageView2"
+        android:background="#ff767676"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="@style/layout_vertical"
+        android:layout_weight="4">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp">
+            android:layout_height="match_parent"
+            style="@style/layout_vertical"
+            android:layout_weight="1">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/tv_infowin_userName"
-                android:paddingLeft="10px"
-                android:paddingBottom="10px"
-                android:autoText="false"
-                android:textColor="#ff0f6c6c" />
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/iv_portrait"
+                android:src="@drawable/spring_android" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:id="@+id/tv_createdDate"
-                android:textColor="#ff0f6c6c" />
-
-
+                android:id="@+id/tv_infowin_userName"
+                android:paddingLeft="10px"
+                android:paddingBottom="10px"
+                android:autoText="false"
+                android:textColor="#ff0f6c6c"
+                android:layout_weight="1"
+                style="@style/layout_vertical" />
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_tags"
+            android:textColor="@color/highlightColor"
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/tv_createdDate"
+            android:textColor="#ff0f6c6c"
+            android:layout_weight="1"
+            style="@style/layout_vertical" />
+
     </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/tv_infowin_briefContent"
-        android:textSize="15sp"
-        android:textIsSelectable="false"
-        android:textStyle="bold"
-        android:textColor="#ff767676"
-        android:maxEms="15"
-        />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:src="@drawable/right_arrow_24" />
 
 </LinearLayout>

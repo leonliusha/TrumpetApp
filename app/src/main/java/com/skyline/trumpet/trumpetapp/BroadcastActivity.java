@@ -19,8 +19,12 @@ import android.widget.Toast;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.skyline.trumpet.trumpetapp.common.DateTimePickerDialog;
+import com.skyline.trumpet.trumpetapp.common.TagsSelectorDialog;
+import com.skyline.trumpet.trumpetapp.database.DBManager;
 import com.skyline.trumpet.trumpetapp.model.Broadcast;
+import com.skyline.trumpet.trumpetapp.model.BroadcastTags;
 import com.skyline.trumpet.trumpetapp.model.MyCoordinate;
+import com.skyline.trumpet.trumpetapp.model.Tag;
 
 import org.joda.time.DateTime;
 import org.springframework.http.HttpEntity;
@@ -36,6 +40,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -49,23 +54,39 @@ public class BroadcastActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView tv_expireDate;
     private LinearLayout layout_changeTime;
-
+    private LinearLayout ll_menuFireBroadcast;
     private String defaultExpireDateTime_chinese;
+    private DBManager dbManager;
+    private Tag[] tags;
+    private Integer[] selectedTagId;
+    private BroadcastTags broadcastTags;
+    private Broadcast broadcast = new Broadcast();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_broadcast);
 
+        dbManager = new DBManager(this);
+        updateLocalTags();
+
         btn_sendBroadcast = (Button)findViewById(R.id.btn_sendBroadcast);
         btn_sendBroadcast.setEnabled(false);
         initToolbar();
+        initMenuListener();
         initMyCoordinate();
         sendBroadcastButtonListener();
         initBriefContentListener();
         initDateTimePicker();
+        initTagsSelectListener();
 
         //dataSettingForTest();
+    }
+
+    private void updateLocalTags(){
+        //String url = getString(R.string.base_uri) + "/getTags";
+        new getTagsTask().execute();
     }
 
     private void initToolbar(){
@@ -87,6 +108,23 @@ public class BroadcastActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void initMenuListener(){
+        ll_menuFireBroadcast = (LinearLayout)findViewById(R.id.menu_fire_broadcast);
+        ll_menuFireBroadcast.setBackgroundColor(getResources().getColor(R.color.highlightColor));
+//        ll_menuFireBroadcast.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(clickedLayout != null)
+//                    clickedLayout.setBackgroundColor(getResources().getColor(R.color.menu_normal));
+//                clickedLayout = ll_menuFireBroadcast;
+//                ll_menuFireBroadcast.setBackgroundColor(getResources().getColor(R.color.menu_highlight));
+//                fireBroadcastButtonListener();
+//            }
+//        });
+
+
     }
 
     private void dataSettingForTest(){
@@ -150,6 +188,22 @@ public class BroadcastActivity extends AppCompatActivity {
         });
     }
 
+    private void initTagsSelectListener(){
+        final int tagsDialogFontColor = getResources().getColor(R.color.highlightColor);
+        LinearLayout layout_selectTags = (LinearLayout)findViewById(R.id.ll_adding_tag);
+        final TextView tv_selectedTags = (TextView)findViewById(R.id.tv_selected_tags);
+        final String title = getResources().getString(R.string.tags_selector_title);
+        layout_selectTags.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // List<Tag> tagList = dbManager.selectAll();
+                TagsSelectorDialog tagsDialog = new TagsSelectorDialog(BroadcastActivity.this,title, Arrays.asList(tags),tagsDialogFontColor,broadcast);
+                tagsDialog.initDialog(tv_selectedTags,getApplicationContext());
+            }
+        });
+
+    }
+
     public void showTimePickerDialog(View view){
         TimePickerFragment timePicker = new TimePickerFragment();
         timePicker.show(getFragmentManager(),"timePicker");
@@ -157,17 +211,21 @@ public class BroadcastActivity extends AppCompatActivity {
     }
 
     private class PostBroadcastTask extends AsyncTask<MediaType, Void, Broadcast> {
-        private Broadcast broadcast = new Broadcast();
+
 
         @Override
         //preparing the Broadcast entity
         protected void onPreExecute(){
             //etBriefContent = (EditText)findViewById(R.id.et_briefContent);
+            TextView tvSelectedTags = (TextView)findViewById(R.id.tv_selected_tags);
             EditText etDescriptionContent = (EditText)findViewById(R.id.et_descriptionContent);
+            EditText et_quantity = (EditText)findViewById(R.id.et_quantity);
             broadcast.setLatitude(myCoordinate.getMyLatitude());
             broadcast.setLongitude(myCoordinate.getMyLongitude());
             broadcast.setBrief(etBriefContent.getText().toString());
             broadcast.setDescription(etDescriptionContent.getText().toString());
+            broadcast.setTags(tvSelectedTags.getText().toString());
+            broadcast.setAmount(new Integer(et_quantity.getText().toString()));
             Date expireDate = new Date();
             try {
                 expireDate = dtfOut.parse(tv_expireDate.getText().toString());
@@ -175,6 +233,7 @@ public class BroadcastActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             broadcast.setExpireDate((new Timestamp(expireDate.getTime())));
+            broadcastTags = new BroadcastTags(broadcast,selectedTagId);
 
         }
 
@@ -213,12 +272,12 @@ public class BroadcastActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Broadcast broadcast){
-            System.out.println("my first broadcast brief is: " + broadcast.getBrief());
-            System.out.println("my first broadcast description is: " + broadcast.getDescription());
-            System.out.println("the created date is : " + broadcast.getExpireDate());
+//            System.out.println("my first broadcast brief is: " + broadcast.getBrief());
+//            System.out.println("my first broadcast description is: " + broadcast.getDescription());
+//            System.out.println("the created date is : " + broadcast.getExpireDate());
         }
 
-        /*****Creating a new objectMapper for serialise Joda Datetime to JSON.*/
+        /*****Creating a new objectMapper for serialize Joda Datetime to JSON.*/
         private ObjectMapper objectMapper(){
             //there is no need to create an Objectmapper from an MapperFactoryBean()
 
@@ -238,6 +297,31 @@ public class BroadcastActivity extends AppCompatActivity {
             return converter;
         }
 
+    }
+
+    private class getTagsTask extends AsyncTask<Void, Void, Tag[]>{
+
+
+        @Override
+        protected Tag[] doInBackground(Void... params) {
+            try {
+                final String url = getString(R.string.base_uri) + "/getTags";
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                tags = restTemplate.getForObject(url, Tag[].class);
+                //broadcast = restTemplate.getForObject(url, (Class<List<Boradcast>>)(Class<?>)List.class);
+                return tags;
+            }catch(Exception e){
+                Log.e(TAG,e.getMessage(),e);
+            }
+            return null;
+        }
+
+        @Override
+        protected  void onPostExecute(Tag[] tags){
+            //dbManager.removeAll();
+            //dbManager.addTags(Arrays.asList(tags));
+        }
     }
 
     @Override
@@ -260,5 +344,11 @@ public class BroadcastActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        dbManager.closeDB();
     }
 }

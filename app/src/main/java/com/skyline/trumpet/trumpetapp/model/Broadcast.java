@@ -17,10 +17,22 @@ public class Broadcast implements Serializable{
     private Timestamp expireDate;
     private double latitude;
     private double longitude;
+    private String tags;
+    private String tagsId;
+    public String getTagsId() {
+
+        return tagsId;
+    }
+
+    public void setTagsId(String tagsId) {
+        this.tagsId = tagsId;
+    }
+
+
 
     public Broadcast(){}
 
-    public Broadcast(int type, String brief, String description, int amount, int count, Timestamp createdDate, double latitude, double longitude){
+    public Broadcast(int type, String brief, String description, int amount, int count, Timestamp createdDate, double latitude, double longitude, String tags){
         this.type = type;
         this.brief = brief;
         this.description = description;
@@ -29,6 +41,7 @@ public class Broadcast implements Serializable{
         this.createdDate = createdDate;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.tags = tags;
     }
 
     public String toString(){
@@ -110,4 +123,12 @@ public class Broadcast implements Serializable{
     public void setLongitude(double myLongitude) {
         this.longitude = myLongitude;
     }
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
 }

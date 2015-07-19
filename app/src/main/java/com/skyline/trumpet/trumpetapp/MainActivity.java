@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.support.v7.widget.Toolbar;
 
 import com.skyline.trumpet.trumpetapp.model.Broadcast;
 import com.skyline.trumpet.trumpetapp.model.MyCoordinate;
@@ -64,12 +64,16 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
     private Toolbar toolbar;
     private LinearLayout clickedLayout, ll_menuHome, ll_menuFireBroadcast, ll_menuLocate, ll_menuRetrieveBroadcast, ll_menuFriends;
 
+    //private DBManager dbManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //dbManager = new DBManager(this);
+        //updateLocalTags();
         initToolbarListener();
         initMenuListener();
         initLongClickListener();
@@ -84,6 +88,11 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
 
 
     }
+
+//    private void updateLocalTags(){
+//        String url = getString(R.string.base_uri) + "/getTags";
+//        new getTagsTask().execute();
+//    }
 
     private void initToolbarListener(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -116,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
                 if(clickedLayout != null)
                     clickedLayout.setBackgroundColor(getResources().getColor(R.color.menu_normal));
                 clickedLayout = ll_menuRetrieveBroadcast;
-                ll_menuRetrieveBroadcast.setBackgroundColor(getResources().getColor(R.color.menu_highlight));
+                //ll_menuRetrieveBroadcast.setBackgroundColor(getResources().getColor(R.color.menu_highlight));
                 retrieveBroadcastButtonListener();
             }
         });
@@ -128,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
                 if(clickedLayout != null)
                     clickedLayout.setBackgroundColor(getResources().getColor(R.color.menu_normal));
                 clickedLayout = ll_menuFireBroadcast;
-                ll_menuFireBroadcast.setBackgroundColor(getResources().getColor(R.color.menu_highlight));
+               // ll_menuFireBroadcast.setBackgroundColor(getResources().getColor(R.color.menu_highlight));
                 fireBroadcastButtonListener();
             }
         });
@@ -278,13 +287,17 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
                 View infoWindowView = getLayoutInflater().inflate(R.layout.layout_info_window, null);
                 //Broadcast broadcast = markerBroadcastMap.get(marker);
                 TextView tv_infowin_briefContent = (TextView)infoWindowView.findViewById(R.id.tv_infowin_briefContent);
+                TextView tv_infowin_descriptionContent = (TextView)infoWindowView.findViewById(R.id.tv_infowin_descriptionContent);
                 TextView tv_infowin_userName = (TextView)infoWindowView.findViewById(R.id.tv_infowin_userName);
                 TextView tv_createdDate = (TextView)infoWindowView.findViewById(R.id.tv_createdDate);
+                TextView tv_tags = (TextView)infoWindowView.findViewById(R.id.tv_tags);
                 Broadcast selectedBroadcast = markerBroadcastMap.get(marker);
                 if(selectedBroadcast != null) {
                     tv_infowin_briefContent.setText(selectedBroadcast.getBrief());
+                    tv_infowin_descriptionContent.setText(selectedBroadcast.getDescription());
                     //Marker's title has the value of User Name;
                     tv_infowin_userName.setText("路人用户");
+                    tv_tags.setText(selectedBroadcast.getTags());
                     tv_createdDate.setText(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(selectedBroadcast.getCreatedDate()));
                     return infoWindowView;
                 }
@@ -397,6 +410,34 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
         }
 
     }
+
+
+//    private class getTagsTask extends AsyncTask<Void, Void, Tag[]>{
+//        private Tag[] tags;
+//
+//        @Override
+//        protected Tag[] doInBackground(Void... params) {
+//            try {
+//                final String url = getString(R.string.base_uri) + "/getTags";
+//
+//                RestTemplate restTemplate = new RestTemplate();
+//                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+//                tags = restTemplate.getForObject(url, Tag[].class);
+//                //broadcast = restTemplate.getForObject(url, (Class<List<Boradcast>>)(Class<?>)List.class);
+//                return tags;
+//            }catch(Exception e){
+//                Log.e(TAG,e.getMessage(),e);
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected  void onPostExecute(Tag[] tags){
+//            dbManager.addTags(Arrays.asList(tags));
+//        }
+//    }
+
+
     @Override
     public void onMarkerDrag(Marker arg0){
     }
@@ -429,6 +470,7 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
             mapView = null;
         }
         super.onDestroy();
+       // dbManager.closeDB();
     }
 
     @Override

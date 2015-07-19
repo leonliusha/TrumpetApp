@@ -29,6 +29,9 @@
     <string name="date_time_picker_intro2">过期后不再标注地图，仍可在“我的信息”中找到</string>
     <string name="change_time">更改时间</string>
     <string name="change_date">更改日期</string>
+    <string name="add_tags">添加标签</string>
+    <string name="add_quantity">添加数量</string>
+    <string name="tags_selector_title">请给信息选择标签，最多选择五个标签</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_broadcast_info">BroadcastInfoActivity</string>
