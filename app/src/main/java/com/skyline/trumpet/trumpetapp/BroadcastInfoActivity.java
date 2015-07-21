@@ -16,6 +16,10 @@ public class BroadcastInfoActivity extends Activity {
     private TextView tv_briefContent;
     private TextView tv_descriptionContent;
     private Broadcast selectedBroadcast;
+    private TextView tv_expireDate;
+    private TextView tv_selectedTags;
+    private TextView tv_quantity;
+    private TextView tv_count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +34,17 @@ public class BroadcastInfoActivity extends Activity {
         selectedBroadcast = (Broadcast)getIntent().getSerializableExtra("selectedBroadcast");
         tv_briefContent = (TextView)findViewById(R.id.tv_briefContent);
         tv_descriptionContent = (TextView)findViewById(R.id.tv_descriptionContent);
+        tv_expireDate = (TextView)findViewById(R.id.tv_expire_date);
+        tv_selectedTags = (TextView)findViewById(R.id.tv_selected_tags);
+        tv_quantity = (TextView)findViewById(R.id.tv_quantity);
+        tv_count = (TextView)findViewById(R.id.tv_count);
         if(selectedBroadcast!=null) {
             tv_briefContent.setText(selectedBroadcast.getBrief());
             tv_descriptionContent.setText(selectedBroadcast.getDescription());
+            tv_expireDate.setText(selectedBroadcast.getExpireDate().toString());
+            tv_selectedTags.setText(selectedBroadcast.getTags());
+            tv_quantity.setText(String.valueOf(selectedBroadcast.getAmount()));
+            tv_count.setText(String.valueOf(selectedBroadcast.getCount()));
         }
     }
 

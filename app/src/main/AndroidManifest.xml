@@ -54,7 +54,8 @@
         </activity>
         <activity
             android:name=".BroadcastInfoActivity"
-            android:label="@string/title_activity_broadcast_info" >
+            android:label="@string/title_activity_broadcast_info"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

@@ -32,7 +32,9 @@
     <string name="add_tags">添加标签</string>
     <string name="add_quantity">添加数量</string>
     <string name="tags_selector_title">请给信息选择标签，最多选择五个标签</string>
-
+    <string name="reserve">预定</string>
+    <string name="make_call">一键拨号</string>
+    <string name="send_message">私聊</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_broadcast_info">BroadcastInfoActivity</string>
 
