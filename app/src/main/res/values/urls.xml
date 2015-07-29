@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="development_base_uri">http://192.168.1.103:8080</string>
+    <string name="production_base_uri">http://121.41.50.219:8080/trumpetBackend</string>
     <string name="base_uri">http://192.168.1.103:8080</string>
 </resources>

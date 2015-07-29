@@ -8,6 +8,8 @@ import java.sql.Timestamp;
  */
 public class Broadcast implements Serializable{
     private long id;
+    private long userId;
+    private String author;
     private int type;
     private String brief;
     private String description;
@@ -32,7 +34,9 @@ public class Broadcast implements Serializable{
 
     public Broadcast(){}
 
-    public Broadcast(int type, String brief, String description, int amount, int count, Timestamp createdDate, double latitude, double longitude, String tags){
+    public Broadcast(long userId,String author,int type, String brief, String description, int amount, int count, Timestamp createdDate, double latitude, double longitude, String tags){
+        this.userId = userId;
+        this.author = author;
         this.type = type;
         this.brief = brief;
         this.description = description;
@@ -46,6 +50,29 @@ public class Broadcast implements Serializable{
 
     public String toString(){
         return getType() + getBrief() + getDescription() + getCreatedDate();
+    }
+
+    @Override
+    public int hashCode(){
+        long latiLong = Double.doubleToLongBits(latitude);
+        long longiLong = Double.doubleToLongBits(longitude);
+        long dateLong = createdDate.getTime();
+        int result = 17;
+        result = 37 * result + (int) (id ^ (id >>> 32));
+        result = 37 * result + (int) (latiLong ^ (latiLong >>> 32));
+        result = 37 * result + (int) (longiLong ^ (longiLong >>> 32));
+        result = 37 * result + (int) (dateLong ^ (dateLong >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof Broadcast))
+            return false;
+        Broadcast broadcast = (Broadcast)o;
+        return broadcast.id == id && broadcast.createdDate.equals(createdDate)
+                                  && broadcast.latitude == latitude
+                                  && broadcast.longitude == longitude;
     }
 
     public long getId() {
@@ -123,12 +150,29 @@ public class Broadcast implements Serializable{
     public void setLongitude(double myLongitude) {
         this.longitude = myLongitude;
     }
+
     public String getTags() {
         return tags;
     }
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
 }

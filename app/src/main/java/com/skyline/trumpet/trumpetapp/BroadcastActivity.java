@@ -1,5 +1,6 @@
 package com.skyline.trumpet.trumpetapp;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,11 +21,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.skyline.trumpet.trumpetapp.common.DateTimePickerDialog;
 import com.skyline.trumpet.trumpetapp.common.TagsSelectorDialog;
+import com.skyline.trumpet.trumpetapp.common.UserLocalStore;
 import com.skyline.trumpet.trumpetapp.database.DBManager;
 import com.skyline.trumpet.trumpetapp.model.Broadcast;
 import com.skyline.trumpet.trumpetapp.model.BroadcastTags;
 import com.skyline.trumpet.trumpetapp.model.MyCoordinate;
 import com.skyline.trumpet.trumpetapp.model.Tag;
+import com.skyline.trumpet.trumpetapp.model.User;
 
 import org.joda.time.DateTime;
 import org.springframework.http.HttpEntity;
@@ -32,7 +35,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -42,7 +44,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 
 public class BroadcastActivity extends AppCompatActivity {
@@ -60,7 +61,9 @@ public class BroadcastActivity extends AppCompatActivity {
     private Tag[] tags;
     private Integer[] selectedTagId;
     private BroadcastTags broadcastTags;
-    private Broadcast broadcast = new Broadcast();
+    private UserLocalStore userLocalStore;
+    private Broadcast broadcast;
+    private User user;
 
 
     @Override
@@ -68,6 +71,8 @@ public class BroadcastActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_broadcast);
 
+        broadcast = new Broadcast();
+        userLocalStore = new UserLocalStore(this);
         dbManager = new DBManager(this);
         updateLocalTags();
 
@@ -211,8 +216,6 @@ public class BroadcastActivity extends AppCompatActivity {
     }
 
     private class PostBroadcastTask extends AsyncTask<MediaType, Void, Broadcast> {
-
-
         @Override
         //preparing the Broadcast entity
         protected void onPreExecute(){
@@ -233,7 +236,9 @@ public class BroadcastActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             broadcast.setExpireDate((new Timestamp(expireDate.getTime())));
-            broadcastTags = new BroadcastTags(broadcast,selectedTagId);
+            broadcast.setUserId(user.getId());
+            broadcast.setAuthor(user.getUserName());
+            //broadcastTags = new BroadcastTags(broadcast,selectedTagId);
 
         }
 
@@ -250,7 +255,7 @@ public class BroadcastActivity extends AppCompatActivity {
                 requestHeaders.setContentType(mediaType);
                 RestTemplate restTemplate = new RestTemplate();
                 //marshalling the Broadcast object to JSON
-                List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
+                //List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
                 //MappingJackson2HttpMessageConverter jacksonConverter = (MappingJackson2HttpMessageConverter)converters.get(5);
                 //mappingJackson2HttpMessageConverter(jacksonConverter);
                 /***DO NOT need to Add a new MappingJackson2HttpMessageConverter to converters, its already added to the converter list. New Feature from Spring  **/
@@ -344,6 +349,18 @@ public class BroadcastActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+
+        if(userLocalStore.getLoginStatus()){
+            user = userLocalStore.getUserLoggedIn();
+        }
+        else{
+            startActivity(new Intent(this,LoginActivity.class));
+        }
     }
 
     @Override

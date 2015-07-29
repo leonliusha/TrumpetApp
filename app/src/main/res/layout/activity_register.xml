@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.skyline.trumpet.trumpetapp.RegisterActivity">
+
+    <TextView android:text="@string/user_name" android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_userName" />
+
+    <EditText
+        android:layout_width="214dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="20"
+        android:id="@+id/et_userName" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/password"
+        android:id="@+id/tv_password" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/et_password" />
+
+    <TextView android:text="@string/email" android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_email" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/et_email" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/phone"
+        android:id="@+id/tv_phone" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:id="@+id/et_phone" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register"
+            android:id="@+id/btn_register"
+            android:layout_marginRight="5dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_back"
+            android:id="@+id/btn_back"
+            android:layout_marginLeft="5dp" />
+    </LinearLayout>
+
+</LinearLayout>

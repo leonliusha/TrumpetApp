@@ -11,10 +11,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.skyline.trumpet.trumpetapp.common.UserLocalStore;
 import com.skyline.trumpet.trumpetapp.model.Broadcast;
 import com.skyline.trumpet.trumpetapp.model.MyCoordinate;
 import com.tencent.map.geolocation.TencentLocation;
@@ -37,10 +37,12 @@ import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
-public class MainActivity extends AppCompatActivity implements OnMarkerDraggedListener {
+public class MainActivity extends AppCompatActivity implements OnMarkerDraggedListener{
     final static String TAG = "MainActivity";
     private MapView mapView;
     private TencentMap tencentMap;
@@ -55,14 +57,15 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
     private OnInfoWindowClickListener infoWindowClickListener;
     private TencentLocationRequest locationRequest;
     private TencentLocationManager locationManager;
-    private Button btn_fireBroadcast;
-    private Button btn_retrieveBroadcast;
     private ProgressDialog progressDialog;
     private boolean destroyed = false;
     private Map<Marker,Broadcast> markerBroadcastMap;
+    private Set<Broadcast> markedBroadcast;
     private Marker openedMarker;
     private Toolbar toolbar;
     private LinearLayout clickedLayout, ll_menuHome, ll_menuFireBroadcast, ll_menuLocate, ll_menuRetrieveBroadcast, ll_menuFriends;
+    private UserLocalStore userLocalStore;
+
 
     //private DBManager dbManager;
 
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        userLocalStore = new UserLocalStore(this);
         //dbManager = new DBManager(this);
         //updateLocalTags();
         initToolbarListener();
@@ -102,15 +106,18 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-//                switch (item.getItemId()) {
-//                    case R.id.menu_fire_broadcast:
-//                        fireBroadcastButtonListener();
-//                        return true;
-//                    case R.id.menu_retrieve_broadcast:
-//                        retrieveBroadcastButtonListener();
-//                        return true;
-//                }
-                return false;
+                switch (item.getItemId()) {
+                    case R.id.toolbar_myself:
+                        if(userLocalStore.getLoginStatus())
+                            startActivity(new Intent(getApplicationContext(), UserHomePageActivity.class));
+                        else
+                            startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+                        break;
+                    case R.id.toolbar_search:
+
+                        break;
+                }
+                return true;
             }
         });
 
@@ -134,10 +141,10 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
         ll_menuFireBroadcast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(clickedLayout != null)
+                if (clickedLayout != null)
                     clickedLayout.setBackgroundColor(getResources().getColor(R.color.menu_normal));
                 clickedLayout = ll_menuFireBroadcast;
-               // ll_menuFireBroadcast.setBackgroundColor(getResources().getColor(R.color.menu_highlight));
+                // ll_menuFireBroadcast.setBackgroundColor(getResources().getColor(R.color.menu_highlight));
                 fireBroadcastButtonListener();
             }
         });
@@ -149,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
         mapView = (MapView)findViewById(R.id.mapview);
         tencentMap = mapView.getMap();
         markerBroadcastMap = new HashMap<>();
+        markedBroadcast = new HashSet<>();
         //tencentMap.setZoom(5);
         //tencentMap.setOnMarkerDraggedListener(this);
         OnMapLongClickListener mapLongClickListener = new OnMapLongClickListener() {
@@ -286,23 +294,22 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
                 //LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
                 View infoWindowView = getLayoutInflater().inflate(R.layout.layout_info_window, null);
                 //Broadcast broadcast = markerBroadcastMap.get(marker);
-                TextView tv_infowin_briefContent = (TextView)infoWindowView.findViewById(R.id.tv_infowin_briefContent);
-                TextView tv_infowin_descriptionContent = (TextView)infoWindowView.findViewById(R.id.tv_infowin_descriptionContent);
-                TextView tv_infowin_userName = (TextView)infoWindowView.findViewById(R.id.tv_infowin_userName);
-                TextView tv_createdDate = (TextView)infoWindowView.findViewById(R.id.tv_createdDate);
-                TextView tv_tags = (TextView)infoWindowView.findViewById(R.id.tv_tags);
+                TextView tv_infowin_briefContent = (TextView) infoWindowView.findViewById(R.id.tv_infowin_briefContent);
+                TextView tv_infowin_descriptionContent = (TextView) infoWindowView.findViewById(R.id.tv_infowin_descriptionContent);
+                TextView tv_infowin_userName = (TextView) infoWindowView.findViewById(R.id.tv_infowin_userName);
+                TextView tv_createdDate = (TextView) infoWindowView.findViewById(R.id.tv_createdDate);
+                TextView tv_tags = (TextView) infoWindowView.findViewById(R.id.tv_tags);
                 Broadcast selectedBroadcast = markerBroadcastMap.get(marker);
-                if(selectedBroadcast != null) {
+                if (selectedBroadcast != null) {
                     tv_infowin_briefContent.setText(selectedBroadcast.getBrief());
                     tv_infowin_descriptionContent.setText(selectedBroadcast.getDescription());
                     //Marker's title has the value of User Name;
-                    tv_infowin_userName.setText("路人用户");
+                    tv_infowin_userName.setText(selectedBroadcast.getAuthor());
                     tv_tags.setText(selectedBroadcast.getTags());
                     tv_createdDate.setText(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(selectedBroadcast.getCreatedDate()));
                     return infoWindowView;
-                }
-                else
-                return null;
+                } else
+                    return null;
             }
 
             @Override
@@ -344,6 +351,7 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
         broadcastMarker.setInfoWindowShowAnimation(R.anim.show_infowindow_anim);
         broadcastMarker.setInfoWindowHideAnimation(R.anim.hide_infowindow_anim);
         markerBroadcastMap.put(broadcastMarker, broadcast);
+        markedBroadcast.add(broadcast);
     }
 
 
@@ -398,15 +406,19 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
             dismissProgressDialog();
 
             /********************LATER WILL DO************************************/
-            //Using ArrayList<Broadcast> did not work, the Jackson somehow doesnot know  how to cast to Broadcast, and using default LinkedHashMap instead!
+            //Using ArrayList<Broadcast> did not work, the Jackson somehow does not know  how to cast to Broadcast, and using default LinkedHashMap instead!
             //should figure out this issue later. Using Array  Broadcast[] instead currently.
 //            for(Iterator it=broadcasts.iterator(); it.hasNext();){
 //                Broadcast broadcast = (Broadcast)it.next();
 //                markBroadcast(broadcast);
 //            }
+            if(broadcasts != null && broadcasts.length > 0) {
+                for (int i = 0; i < broadcasts.length; i++){
+                    if(markedBroadcast.size()>0 && !markedBroadcast.contains(broadcasts[i]))
+                        markBroadcast(broadcasts[i]);
+                }
 
-            for(int i=0;i<broadcasts.length;i++)
-                markBroadcast(broadcasts[i]);
+            }
         }
 
     }
@@ -461,6 +473,12 @@ public class MainActivity extends AppCompatActivity implements OnMarkerDraggedLi
 //        tencentMap.clearAllOverlays();
 //    }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+
+
+    }
 
     @Override
     protected void onDestroy(){

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">微播</string>
+    <string name="app_name">小喇叭</string>
 
     <string name="fire_broadcast">新微播</string>
     <string name="retrieve_broadcast">收微播</string>
@@ -35,6 +35,13 @@
     <string name="reserve">预定</string>
     <string name="make_call">一键拨号</string>
     <string name="send_message">私聊</string>
+    <string name="user_name">用户名</string>
+    <string name="password">密码</string>
+    <string name="email">邮箱</string>
+    <string name="phone">电话</string>
+    <string name="login">登陆</string>
+    <string name="register">免费注册</string>
+    <string name="logout">注销</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_broadcast_info">BroadcastInfoActivity</string>
 
@@ -42,4 +49,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="infowindow_contentDesc">portrait</string>
     <string name="title_activity_date_time_picker">DateTimePickerActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_user_home_page">UserHomePageActivity</string>
 </resources>
