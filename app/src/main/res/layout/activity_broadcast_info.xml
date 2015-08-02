@@ -283,15 +283,7 @@
 
     </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="0px"
-        style="@style/layout_vertical"
-        android:layout_weight="1"
-        android:gravity="bottom">
 
-        <include layout="@layout/broadcast_foot" />
-    </LinearLayout>
 
 </LinearLayout>
 

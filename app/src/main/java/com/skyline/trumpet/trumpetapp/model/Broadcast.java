@@ -21,10 +21,7 @@ public class Broadcast implements Serializable{
     private double longitude;
     private String tags;
     private String tagsId;
-    public String getTagsId() {
 
-        return tagsId;
-    }
 
     public void setTagsId(String tagsId) {
         this.tagsId = tagsId;
@@ -173,6 +170,11 @@ public class Broadcast implements Serializable{
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public String getTagsId() {
+
+        return tagsId;
     }
 
 }

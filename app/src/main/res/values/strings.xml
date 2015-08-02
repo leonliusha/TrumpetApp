@@ -20,9 +20,10 @@
     <string name="menu_fire_broadcast">发消息</string>
     <string name="menu_retrieve_broadcast">收消息</string>
     <string name="menu_near_by">周边</string>
+    <string name="menu_radar">雷达</string>
+    <string name="scan">扫描</string>
     <string name="menu_myself">我</string>
     <string name="menu_follows">关注</string>
-
     <string name="toolbar_search">发现</string>
     <string name="toolbar_locate">定位</string>
     <string name="toolbar_list">列表</string>
