@@ -47,6 +47,7 @@ dependencies {
     // compile files('libs/spring-beans-4.0.0.RELEASE.jar')
     compile files('libs/spring-web-4.0.0.RELEASE.jar')
     compile files('libs/spring-core-4.0.0.RELEASE.jar')
+    compile 'com.android.support:support-v4:22.2.0'
     compile 'com.android.support:appcompat-v7:22.2.0'
     //compile 'com.android.support:support-v4:22.2.0'
 }

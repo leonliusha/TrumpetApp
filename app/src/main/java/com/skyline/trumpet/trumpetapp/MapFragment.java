@@ -1,175 +1,49 @@
 package com.skyline.trumpet.trumpetapp;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.RadioGroup;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.skyline.trumpet.trumpetapp.common.UserLocalStore;
+import com.skyline.trumpet.trumpetapp.model.Broadcast;
 import com.skyline.trumpet.trumpetapp.model.MyCoordinate;
 import com.tencent.map.geolocation.TencentLocation;
 import com.tencent.map.geolocation.TencentLocationListener;
 import com.tencent.map.geolocation.TencentLocationManager;
 import com.tencent.map.geolocation.TencentLocationRequest;
+import com.tencent.mapsdk.raster.model.BitmapDescriptor;
+import com.tencent.mapsdk.raster.model.BitmapDescriptorFactory;
+import com.tencent.mapsdk.raster.model.LatLng;
+import com.tencent.mapsdk.raster.model.Marker;
+import com.tencent.mapsdk.raster.model.MarkerOptions;
+import com.tencent.tencentmap.mapsdk.map.MapView;
 import com.tencent.tencentmap.mapsdk.map.TencentMap;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
-    private RadioGroup rgs;
-    public List<Fragment> fragments = new ArrayList<>();
-    public MyCoordinate myCoordinate;
-    private boolean gps_enabled = false, network_enabled=false;
-    private Toolbar toolbar;
-    private Context context ;
-    private TencentMap tencentMap;
-    private TencentLocationRequest locationRequest;
-    private TencentLocationManager tencentLocationManager;
-    private TencentLocationListener locationListener;
-    private LocationManager locationManager;
-    private UserLocalStore userLocalStore;
+public class MapFragment extends Fragment implements TencentMap.OnMarkerDraggedListener,View.OnClickListener {
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        positionServiceInit();
-        initToolbarListener();
-        //locationServiceInit();
-        userLocalStore = new UserLocalStore(this);
-        fragments.add(new HomeFragment());
-        fragments.add(new TestFragment());
-        fragments.add(new BroadcastFragment());
-        fragments.add(new MapFragment());
-        fragments.add(new UserHomePageFragment());
-        rgs = (RadioGroup) findViewById(R.id.tabs_rg);
-        FragmentTabAdapter tabAdapter = new FragmentTabAdapter(this, fragments, R.id.tab_content, rgs);
-        tabAdapter.setOnRgsExtraCheckedChangedListener(new FragmentTabAdapter.OnRgsExtraCheckedChangedListener() {
-            @Override
-            public void OnRgsExtraCheckedChanged(RadioGroup radioGroup, int checkedId, int index) {
-                System.out.println("Extra---- " + index + " checked!!! ");
-            }
-        });
-    }
-
-    //initiate and register the Tencent Position service
-    private void positionServiceInit(){
-        myCoordinate = new MyCoordinate();
-        context = getApplicationContext();
-        locationListener = new TencentLocationListener(){
-            @Override
-            public void onLocationChanged(TencentLocation tencentLocation, int error, String reason){
-                if(TencentLocation.ERROR_OK == error){
-                    //get location success
-                    //Log.i(TAG, tencentLocation.getAddress());
-                    myCoordinate.setMyLatitude(tencentLocation.getLatitude());
-                    myCoordinate.setMyLongitude(tencentLocation.getLongitude());
-                    //tencentMap.animateTo(new LatLng(latitude,longitude));
-                    //tencentMap.setCenter(new LatLng(myCoordinate.getMyLatitude(),myCoordinate.getMyLongitude()));
-                }else{
-                    //failed
-                }
-                stopLocation();
-            }
-
-            @Override
-            public void onStatusUpdate(String name, int status, String desc){
-            }
-        };
-
-        locationRequest = TencentLocationRequest.create();
-        //set request level to REQ_LEVEL_POI
-        locationRequest.setRequestLevel(TencentLocationRequest.REQUEST_LEVEL_POI);
-        tencentLocationManager = TencentLocationManager.getInstance(context);
-        //registering the TencentLocationListener
-        int error = tencentLocationManager.requestLocationUpdates(locationRequest,locationListener);
-        if(error == 1){
-            System.out.println("the device does not meet the uses permissions");
-        }
-    }
-
-    private void stopLocation(){
-        tencentLocationManager.removeUpdates(locationListener);
-    }
-
-
-    private void initToolbarListener(){
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-                switch (item.getItemId()) {
-                    case R.id.toolbar_myself:
-                        if (userLocalStore.getLoginStatus())
-                            startActivity(new Intent(getApplicationContext(), UserHomePageActivity.class));
-                        else
-                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                        break;
-                    case R.id.toolbar_search:
-
-                        break;
-                }
-                return true;
-            }
-        });
-
-    }
-
-    /*******       this service using the device's own GPS service, the
-     *             retreived coordinate is different with coordinate retrieved by
-     *             TencentMAP SDK, for the purpose of using using Tencent map service,
-     *             using Tencent location service instead.
-     *                                                                                  */
-//    private void locationServiceInit(){
-//        myCoordinate = new MyCoordinate();
-//        locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-//        gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-//        network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-//
-//        Location net_loc = null, gps_loc = null, finalLoc = null;
-//
-//        if (gps_enabled)
-//            gps_loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//        if (network_enabled)
-//            net_loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//
-//        if (gps_loc != null && net_loc != null) {
-//            if (gps_loc.getAccuracy() >= net_loc.getAccuracy())
-//                finalLoc = gps_loc;
-//            else
-//                finalLoc = net_loc;
-//
-//        } else {
-//            if (gps_loc != null)
-//                finalLoc = gps_loc;
-//             else if (net_loc != null)
-//                finalLoc = net_loc;
-//        }
-//        myCoordinate.setMyLatitude(finalLoc.getLatitude());
-//        myCoordinate.setMyLongitude(finalLoc.getLongitude());
-//    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    /*
+    final static String TAG = "MainActivity";
+    private View view;
     private MapView mapView;
     private TencentMap tencentMap;
     private MyCoordinate myCoordinate;
@@ -180,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     //private Marker broadcastMarker;
     private Context context ;
     private TencentLocationListener locationListener;
-    private OnInfoWindowClickListener infoWindowClickListener;
+    private TencentMap.OnInfoWindowClickListener infoWindowClickListener;
     private TencentLocationRequest locationRequest;
     private TencentLocationManager locationManager;
     private ProgressDialog progressDialog;
@@ -188,25 +62,33 @@ public class MainActivity extends AppCompatActivity {
     private Map<Marker,Broadcast> markerBroadcastMap;
     private Set<Broadcast> markedBroadcast;
     private Marker openedMarker;
-    private Toolbar toolbar;
+   // private Toolbar toolbar;
     private LinearLayout clickedLayout, ll_menuHome, ll_menuFireBroadcast, ll_menuLocate, ll_menuRetrieveBroadcast, ll_menuFriends;
     private UserLocalStore userLocalStore;
+    private Button btnRetrieveBroadcast;
 
-
-    //private DBManager dbManager;
-
+    public MapFragment() {
+        // Required empty public constructor
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        userLocalStore = new UserLocalStore(this);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_map, container, false);
+        userLocalStore = new UserLocalStore(this.getActivity());
+        btnRetrieveBroadcast = (Button)view.findViewById(R.id.btn_retrieveBroadcast);
+        btnRetrieveBroadcast.setOnClickListener(this);
         //dbManager = new DBManager(this);
         //updateLocalTags();
-        initToolbarListener();
-        initMenuListener();
-
+        //initToolbarListener();
+        //initMenuListener();
         initLongClickListener();
         mapView.onCreate(savedInstanceState);
         initOnMarkerClickListener();
@@ -216,77 +98,73 @@ public class MainActivity extends AppCompatActivity {
         //retrieveBroadcastButtonListener();
         inforWindowClickListener();
 
-
-
+        return view;
     }
 
-//    private void updateLocalTags(){
-//        String url = getString(R.string.base_uri) + "/getTags";
-//        new getTagsTask().execute();
+
+//    private void initToolbarListener(){
+//        toolbar = (Toolbar)getView().findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+//                switch (item.getItemId()) {
+//                    case R.id.toolbar_myself:
+//                        if(userLocalStore.getLoginStatus())
+//                            startActivity(new Intent(getApplicationContext(), UserHomePageActivity.class));
+//                        else
+//                            startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+//                        break;
+//                    case R.id.toolbar_search:
+//
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+//
 //    }
 
-    private void initToolbarListener(){
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-                switch (item.getItemId()) {
-                    case R.id.toolbar_myself:
-                        if(userLocalStore.getLoginStatus())
-                            startActivity(new Intent(getApplicationContext(), UserHomePageActivity.class));
-                        else
-                            startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
-                        break;
-                    case R.id.toolbar_search:
 
-                        break;
-                }
-                return true;
-            }
-        });
-
-    }
-
-
-    private void initMenuListener(){
-        ll_menuRetrieveBroadcast = (LinearLayout)findViewById(R.id.menu_retrieve_broadcast);
-        ll_menuRetrieveBroadcast.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(clickedLayout != null)
-                    clickedLayout.setBackgroundColor(getResources().getColor(R.color.menu_normal));
-                clickedLayout = ll_menuRetrieveBroadcast;
-                //ll_menuRetrieveBroadcast.setBackgroundColor(getResources().getColor(R.color.menu_highlight));
-                retrieveBroadcastButtonListener();
-            }
-        });
-
-        ll_menuFireBroadcast = (LinearLayout)findViewById(R.id.menu_fire_broadcast);
-        ll_menuFireBroadcast.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (clickedLayout != null)
-                    clickedLayout.setBackgroundColor(getResources().getColor(R.color.menu_normal));
-                clickedLayout = ll_menuFireBroadcast;
-                // ll_menuFireBroadcast.setBackgroundColor(getResources().getColor(R.color.menu_highlight));
-                fireBroadcastButtonListener();
-            }
-        });
-    }
+//    private void initMenuListener(){
+//        ll_menuRetrieveBroadcast = (LinearLayout)findViewById(R.id.menu_retrieve_broadcast);
+//        ll_menuRetrieveBroadcast.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(clickedLayout != null)
+//                    clickedLayout.setBackgroundColor(getResources().getColor(R.color.menu_normal));
+//                clickedLayout = ll_menuRetrieveBroadcast;
+//                //ll_menuRetrieveBroadcast.setBackgroundColor(getResources().getColor(R.color.menu_highlight));
+//                retrieveBroadcastButtonListener();
+//            }
+//        });
+//
+//        ll_menuFireBroadcast = (LinearLayout)findViewById(R.id.menu_fire_broadcast);
+//        ll_menuFireBroadcast.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (clickedLayout != null)
+//                    clickedLayout.setBackgroundColor(getResources().getColor(R.color.menu_normal));
+//                clickedLayout = ll_menuFireBroadcast;
+//                // ll_menuFireBroadcast.setBackgroundColor(getResources().getColor(R.color.menu_highlight));
+//                fireBroadcastButtonListener();
+//            }
+//        });
+//    }
 
 
     //only myMarker has LongClickListener ONLY!!
     private void initLongClickListener(){
-        mapView = (MapView)findViewById(R.id.mapview);
+        mapView = (MapView)view.findViewById(R.id.mapview);
         tencentMap = mapView.getMap();
+
         markerBroadcastMap = new HashMap<>();
         markedBroadcast = new HashSet<>();
         //tencentMap.setZoom(5);
         //tencentMap.setOnMarkerDraggedListener(this);
-        OnMapLongClickListener mapLongClickListener = new OnMapLongClickListener() {
+        TencentMap.OnMapLongClickListener mapLongClickListener = new TencentMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 if(myMarker == null){
@@ -330,13 +208,13 @@ public class MainActivity extends AppCompatActivity {
     //initiate and register the Tencent Position service
     private void positionServiceInit(){
         myCoordinate = new MyCoordinate();
-        context = getApplicationContext();
+        context = this.getActivity().getApplicationContext();
         locationListener = new TencentLocationListener(){
             @Override
             public void onLocationChanged(TencentLocation tencentLocation, int error, String reason){
                 if(TencentLocation.ERROR_OK == error){
                     //get location success
-                    Log.i(TAG,tencentLocation.getAddress());
+                    Log.i(TAG, tencentLocation.getAddress());
                     //myLatitude = tencentLocation.getLatitude();
                     //myLongitude = tencentLocation.getLongitude();
                     myCoordinate.setMyLatitude(tencentLocation.getLatitude());
@@ -371,7 +249,9 @@ public class MainActivity extends AppCompatActivity {
         locationManager.removeUpdates(locationListener);
     }
 
-    private void fireBroadcastButtonListener(){
+
+
+//    private void fireBroadcastButtonListener(){
 //        btn_fireBroadcast = (Button)findViewById(R.id.btn_fireBroadcast);
 //        btn_fireBroadcast.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -381,10 +261,10 @@ public class MainActivity extends AppCompatActivity {
 //                startActivity(intent);
 //            }
 //        });
-        Intent intent = new Intent(getApplicationContext(), BroadcastActivity.class);
-                intent.putExtra("myCoordinate", myCoordinate);
-        startActivity(intent);
-    }
+//        Intent intent = new Intent(this.getActivity().getApplicationContext(), BroadcastActivity.class);
+//        intent.putExtra("myCoordinate", myCoordinate);
+//        startActivity(intent);
+//    }
 
     private void retrieveBroadcastButtonListener(){
         String url = getString(R.string.base_uri) + "/getBroadcastsInDefaultRange";
@@ -400,15 +280,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void inforWindowClickListener(){
-        infoWindowClickListener = new OnInfoWindowClickListener() {
+        infoWindowClickListener = new TencentMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
 //                marker.setSnippet("Infor window clicked");
 //                marker.showInfoWindow();
-                Intent intent = new Intent(getApplicationContext(),BroadcastInfoActivity.class);
+                Intent intent = new Intent(getActivity(),BroadcastInfoActivity.class);
                 intent.putExtra("selectedBroadcast",markerBroadcastMap.get(marker));
                 startActivity(intent);
-
             }
         };
         tencentMap.setOnInfoWindowClickListener(infoWindowClickListener);
@@ -419,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public View getInfoWindow(Marker marker) {
                 //LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
-                View infoWindowView = getLayoutInflater().inflate(R.layout.layout_info_window, null);
+                View infoWindowView = getActivity().getLayoutInflater().inflate(R.layout.layout_info_window, null);
                 //Broadcast broadcast = markerBroadcastMap.get(marker);
                 TextView tv_infowin_briefContent = (TextView) infoWindowView.findViewById(R.id.tv_infowin_briefContent);
                 TextView tv_infowin_descriptionContent = (TextView) infoWindowView.findViewById(R.id.tv_infowin_descriptionContent);
@@ -468,12 +347,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void markBroadcast(Broadcast broadcast){
-       Marker broadcastMarker = tencentMap.addMarker(new MarkerOptions().position(new LatLng(broadcast.getLatitude(), broadcast.getLongitude()))
-               .title(broadcast.getBrief())
-               .snippet(broadcast.getBrief())
-               .anchor(0.5f, 0.5f)
-               .icon(BitmapDescriptorFactory.fromResource(R.drawable.chat_small128))
-               .draggable(false));
+        Marker broadcastMarker = tencentMap.addMarker(new MarkerOptions().position(new LatLng(broadcast.getLatitude(), broadcast.getLongitude()))
+                .title(broadcast.getBrief())
+                .snippet(broadcast.getBrief())
+                .anchor(0.5f, 0.5f)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.chat_small128))
+                .draggable(false));
 
         broadcastMarker.setInfoWindowShowAnimation(R.anim.show_infowindow_anim);
         broadcastMarker.setInfoWindowHideAnimation(R.anim.hide_infowindow_anim);
@@ -481,6 +360,14 @@ public class MainActivity extends AppCompatActivity {
         markedBroadcast.add(broadcast);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_retrieveBroadcast:
+                new GetBroadcastsTask().execute();
+                break;
+        }
+    }
 
 
 //    public class MyLocationListener implements TencentLocationListener{
@@ -503,9 +390,8 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
 
-    private class GetBroadcastsTask extends AsyncTask<Void, Void, Broadcast[]>{
+    private class GetBroadcastsTask extends AsyncTask<Void, Void, Broadcast[]> {
         private Broadcast[] broadcasts;
-
         @Override
         protected void onPreExecute(){
             showLoadingProgressDialog();
@@ -531,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Broadcast[] broadcasts){
             dismissProgressDialog();
-*/
+
             /********************LATER WILL DO************************************/
             //Using ArrayList<Broadcast> did not work, the Jackson somehow does not know  how to cast to Broadcast, and using default LinkedHashMap instead!
             //should figure out this issue later. Using Array  Broadcast[] instead currently.
@@ -539,9 +425,9 @@ public class MainActivity extends AppCompatActivity {
 //                Broadcast broadcast = (Broadcast)it.next();
 //                markBroadcast(broadcast);
 //            }
-   /*         if(broadcasts != null && broadcasts.length > 0) {
+            if(broadcasts != null && broadcasts.length > 0) {
                 for (int i = 0; i < broadcasts.length; i++){
-                    if(markedBroadcast.size()>0 && !markedBroadcast.contains(broadcasts[i]))
+                    if(!markedBroadcast.contains(broadcasts[i]))
                         markBroadcast(broadcasts[i]);
                 }
 
@@ -593,33 +479,29 @@ public class MainActivity extends AppCompatActivity {
     public void onMarkerDragStart(Marker arg0){
     }
 
-//    @Override
-//    public void onInfoWindowClick(Marker marker){
-//        marker.setSnippet("Infor window clicked");
-//        marker.showInfoWindow();
-//        tencentMap.clearAllOverlays();
-//    }
 
     @Override
-    protected void onStart(){
-        super.onStart();
-
-
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
     }
 
     @Override
-    protected void onDestroy(){
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    @Override
+    public void onDestroy(){
         if(mapView!=null) {
             this.destroyed = true;
             mapView.onDestroy();
             mapView = null;
         }
         super.onDestroy();
-       // dbManager.closeDB();
     }
 
     @Override
-    protected void onResume(){
+    public void onResume(){
         if(mapView != null) {
             mapView.onResume();
         }
@@ -627,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause(){
+    public void onPause(){
         if(mapView != null){
             mapView.onPause();
         }
@@ -635,45 +517,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop(){
+    public void onStop(){
         if(mapView != null){
             mapView.onStop();
         }
         super.onStop();
     }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-       getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
     public void showLoadingProgressDialog() {
         this.showProgressDialog(getString(R.string.progress_dialog));
     }
 
     public void showProgressDialog(CharSequence message) {
         if (this.progressDialog == null) {
-            this.progressDialog = new ProgressDialog(this);
+            this.progressDialog = new ProgressDialog(this.getActivity());
             this.progressDialog.setIndeterminate(true);
         }
 
@@ -686,39 +542,20 @@ public class MainActivity extends AppCompatActivity {
             this.progressDialog.dismiss();
         }
     }
-        */
-    public UserLocalStore getUserLocalStore(){
-         return this.userLocalStore;
-    }
 
-    @Override
-    protected void onStart(){
-       super.onStart();
-    }
-
-    @Override
-    protected void onDestroy(){
-
-        super.onDestroy();
-        // dbManager.closeDB();
-    }
-
-    @Override
-    protected void onResume(){
-
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause(){
-        
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop(){
-
-        super.onStop();
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        public void onFragmentInteraction(Uri uri);
     }
 
 }
