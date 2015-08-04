@@ -9,7 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.skyline.trumpet.trumpetapp.common.UserLocalStore;
 import com.skyline.trumpet.trumpetapp.model.MyCoordinate;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     public List<Fragment> fragments = new ArrayList<>();
     public MyCoordinate myCoordinate;
     private boolean gps_enabled = false, network_enabled=false;
+    private TextView tv_FireNewBroadcast;
     private Toolbar toolbar;
     private Context context ;
     private TencentMap tencentMap;
@@ -45,11 +48,12 @@ public class MainActivity extends AppCompatActivity {
 
         positionServiceInit();
         initToolbarListener();
+        fireBroadcastButtonListener();
         //locationServiceInit();
         userLocalStore = new UserLocalStore(this);
         fragments.add(new HomeFragment());
         fragments.add(new TestFragment());
-        fragments.add(new BroadcastFragment());
+        //fragments.add(new BroadcastFragment());
         fragments.add(new MapFragment());
         fragments.add(new UserHomePageFragment());
         rgs = (RadioGroup) findViewById(R.id.tabs_rg);
@@ -167,6 +171,22 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    private void fireBroadcastButtonListener(){
+        tv_FireNewBroadcast = (TextView)findViewById(R.id.tv_fireNewBroadcast);
+        tv_FireNewBroadcast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), NewBroadcastActivity.class);
+                intent.putExtra("myCoordinate", myCoordinate);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_bottom_in,R.anim.slide_top_out);
+            }
+        });
+//        Intent intent = new Intent(getApplicationContext(), BroadcastActivity.class);
+//        intent.putExtra("myCoordinate", myCoordinate);
+//        startActivity(intent);
     }
 
     /*

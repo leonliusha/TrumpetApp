@@ -37,7 +37,8 @@
             android:orientation="horizontal"
             android:gravity="center"
             style="@style/layout_vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="#ffffff">
             <RadioButton
                 android:id="@+id/tab_rb_home"
                 android:layout_width="0dp"
@@ -67,7 +68,7 @@
                 android:singleLine="true"
                 android:background="@drawable/selector_tab"
                 />
-            <RadioButton
+            <!--<RadioButton
                 android:id="@+id/tab_rb_broadcast"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -80,7 +81,14 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:background="@drawable/selector_tab"
-                />
+                />-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_fireNewBroadcast"
+                android:background="@drawable/ic_loud_speaker48" />
+
             <RadioButton
                 android:id="@+id/tab_rb_nearby"
                 android:layout_width="0dp"

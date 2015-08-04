@@ -1,6 +1,5 @@
 package com.skyline.trumpet.trumpetapp;
 
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -68,12 +67,12 @@ public class FragmentTabAdapter implements RadioGroup.OnCheckedChangeListener{
             case R.id.tab_rb_b:
                 changeTab(fragments.get(1),1);
                 break;
-            case R.id.tab_rb_broadcast:
-                if(!userLocalStore.getLoginStatus())
-                    mainActivity.startActivity(new Intent(mainActivity, LoginActivity.class));
-                else
-                    changeTab(fragments.get(Constant.BROADCAST_FRAGMENT), Constant.BROADCAST_FRAGMENT);
-                break;
+//            case R.id.tab_rb_broadcast:
+//                if(!userLocalStore.getLoginStatus())
+//                    mainActivity.startActivity(new Intent(mainActivity, LoginActivity.class));
+//                else
+//                    changeTab(fragments.get(Constant.BROADCAST_FRAGMENT), Constant.BROADCAST_FRAGMENT);
+//                break;
             case R.id.tab_rb_nearby:
                 changeTab(fragments.get(Constant.NEARBY_FRAGMENT),Constant.NEARBY_FRAGMENT);
                 break;

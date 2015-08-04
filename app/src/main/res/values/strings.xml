@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">小喇叭</string>
+    <string name="app_name">食物练</string>
 
     <string name="fire_broadcast">新微播</string>
     <string name="retrieve_broadcast">收微播</string>
@@ -46,6 +46,17 @@
     <string name="login">登陆</string>
     <string name="register">免费注册</string>
     <string name="logout">注销</string>
+
+    <!-- 图片浏览 -->
+    <string name="only_choose_num">超出可选图片张数</string>
+    <string name="finish">完成</string>
+    <string name="invalidSD">sdcard无效或没有插入！</string>
+    <string name="photo">选择相册</string>
+    <string name="album">相册</string>
+    <string name="preview">预览</string>
+    <string name="unfinished">完成</string>
+    <string name="camera_cancel">取消</string>
+    <string name="no_photo">相册没有图片</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_broadcast_info">BroadcastInfoActivity</string>
 
@@ -57,4 +68,5 @@
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_user_home_page">UserHomePageActivity</string>
     <string name="title_activity_main_activity2">MainActivity2Activity</string>
+    <string name="title_activity_new_broadcast">NewBroadcastActivity</string>
 </resources>

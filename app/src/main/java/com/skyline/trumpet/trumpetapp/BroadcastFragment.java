@@ -177,17 +177,17 @@ public class BroadcastFragment extends Fragment {
                 new PostBroadcastTask().execute(MediaType.APPLICATION_JSON);
                 //getActivity().finish();
                 Fragment homeFragment = mainActivity.fragments.get(Constant.HOME_FRAGMENT);
-                Fragment currentFragment = mainActivity.fragments.get(Constant.BROADCAST_FRAGMENT);
+                //Fragment currentFragment = mainActivity.fragments.get(Constant.BROADCAST_FRAGMENT);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
 //                ft.replace(R.id.tab_content, homeFragment);
 //                ft.addToBackStack(null);
 //                ft.commit();
-                currentFragment.onPause();
+                //currentFragment.onPause();
                 if(homeFragment.isAdded())
                     homeFragment.onResume();
                 else
                     ft.add(R.id.tab_content,homeFragment);
-                showTab(homeFragment, currentFragment);
+               // showTab(homeFragment, currentFragment);
                 ft.commit();
             }
         });
