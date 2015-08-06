@@ -205,7 +205,8 @@
                         android:text="@string/send_broadcast"
                         android:id="@+id/btn_sendBroadcast"
                         android:layout_gravity="center_horizontal"
-                        android:gravity="center" />
+                        android:gravity="center"
+                        android:enabled="false" />
 
                 </LinearLayout>
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +22,7 @@ import com.tencent.map.geolocation.TencentLocationManager;
 import com.tencent.map.geolocation.TencentLocationRequest;
 import com.tencent.tencentmap.mapsdk.map.TencentMap;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private TencentLocationListener locationListener;
     private LocationManager locationManager;
     private UserLocalStore userLocalStore;
+    private File cache;
 
 
     @Override
@@ -64,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Extra---- " + index + " checked!!! ");
             }
         });
+        //create a cache file for storing pictures
+        cache = new File(Environment.getExternalStorageDirectory(),"cache");
+        if(!cache.exists())
+            cache.mkdir();
     }
 
     //initiate and register the Tencent Position service
@@ -187,6 +194,10 @@ public class MainActivity extends AppCompatActivity {
 //        Intent intent = new Intent(getApplicationContext(), BroadcastActivity.class);
 //        intent.putExtra("myCoordinate", myCoordinate);
 //        startActivity(intent);
+    }
+
+    public File getCache(){
+        return this.cache;
     }
 
     /*
@@ -720,6 +731,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy(){
 
         super.onDestroy();
+        File[] files = cache.listFiles();
+        for(File file:files){
+            file.delete();
+        }
+        cache.delete();
         // dbManager.closeDB();
     }
 

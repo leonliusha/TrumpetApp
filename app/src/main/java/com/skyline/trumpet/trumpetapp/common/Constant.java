@@ -9,5 +9,11 @@ public class Constant {
     //public static final int BROADCAST_FRAGMENT = 2;
     public static final int NEARBY_FRAGMENT = 2;
     public static final int USER_HOME_PAGE_FRAGMENT = 3;
+    public static final int MAX_PICTURE = 8;
+    public static final int BROADCAST_GALLERY = 1;
+    public static final int BROADCAST_SPORTS = 2;
+    public static final int BROADCAST_DIET = 3;
+    public static final int BROADCAST_INVITATION = 4;
+
 
 }

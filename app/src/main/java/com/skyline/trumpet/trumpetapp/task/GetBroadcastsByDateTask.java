@@ -49,7 +49,7 @@ public class GetBroadcastsByDateTask extends AsyncTask<Void,Void,Broadcast[]> {
 
     @Override
     protected void onPostExecute(Broadcast[] broadcasts){
-        BroadcastAdapter adapter = new BroadcastAdapter(mainActivity,Arrays.asList(broadcasts));
+        BroadcastAdapter adapter = new BroadcastAdapter(mainActivity,Arrays.asList(broadcasts),mainActivity.getCache());
         /*******  this call back function is not elegant, recoding following  */
         ListFragment homeFragment = (ListFragment)mainActivity.fragments.get(Constant.HOME_FRAGMENT);
         homeFragment.setListAdapter(adapter);

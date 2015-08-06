@@ -11,6 +11,6 @@ import java.util.List;
 public class PublicWay {
 	public static List<Activity> activityList = new ArrayList<Activity>();
 	
-	public static int num = 9;
+	public static int num = 8;
 	
 }

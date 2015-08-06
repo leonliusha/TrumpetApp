@@ -21,13 +21,31 @@ public class Broadcast implements Serializable{
     private double longitude;
     private String tags;
     private String tagsId;
+    private String avatarUrl;
+    private String photoUrl;
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+
 
 
     public void setTagsId(String tagsId) {
         this.tagsId = tagsId;
     }
-
-
 
     public Broadcast(){}
 

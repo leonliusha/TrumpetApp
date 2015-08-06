@@ -305,8 +305,6 @@ public class BroadcastActivity extends AppCompatActivity {
     }
 
     private class getTagsTask extends AsyncTask<Void, Void, Tag[]>{
-
-
         @Override
         protected Tag[] doInBackground(Void... params) {
             try {

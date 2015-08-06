@@ -9,6 +9,15 @@ public class User {
     private String password;
     private String email;
     private String phone;
+    private String avatarUrl;
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
 
     public User(){}
 
@@ -22,6 +31,14 @@ public class User {
         this.password = password;
         this.email = email;
         this.phone = phone;
+    }
+
+    public User(String userName, String password, String email, String phone, String avatarUrl){
+        this.userName = userName;
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.avatarUrl = avatarUrl;
     }
 
     public User(long id,String userName, String password, String email, String phone){
